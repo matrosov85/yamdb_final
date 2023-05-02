@@ -17,11 +17,11 @@ $ python manage.py csv_import --csv titles.csv --model Title --app reviews
 Записей добавлено: 32
 """
 
-import os
 import csv
+import os
 
-from django.core.management.base import BaseCommand
 from django.apps import apps
+from django.core.management.base import BaseCommand
 from django.db.models import ForeignKey
 
 from api_yamdb.settings import TEST_DB_DIR

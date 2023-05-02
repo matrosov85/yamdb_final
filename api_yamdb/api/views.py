@@ -1,21 +1,16 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Avg
-from rest_framework import viewsets, mixins
-from rest_framework.filters import SearchFilter
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import mixins, viewsets
+from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
+from reviews.models import Category, Genre, Review, Title
 
-from .serializers import (
-    CategorySerializer,
-    GenreSerializer,
-    TitleSerializer,
-    TitleReadSerializer,
-    ReviewSerializer,
-    CommentSerializer
-)
-from .permissions import IsAdminAuthorOrReadOnly, IsAdminOrReadOnly
 from .filters import TitleFilter
-from reviews.models import Title, Review, Category, Genre
+from .permissions import IsAdminAuthorOrReadOnly, IsAdminOrReadOnly
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer,
+                          TitleReadSerializer, TitleSerializer)
 
 
 class CategoryGenreViewSet(
@@ -71,8 +66,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         """Все отзывы на произведение."""
 
         title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
-        queryset = title.reviews.all()
-        return queryset
+        return title.reviews.all()
 
     def perform_create(self, serializer):
         title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
@@ -94,8 +88,7 @@ class CommentViewSet(viewsets.ModelViewSet):
             pk=self.kwargs.get('review_id'),
             title__id=self.kwargs.get('title_id')
         )
-        queryset = review.comments.all()
-        return queryset
+        return review.comments.all()
 
     def perform_create(self, serializer):
         review = get_object_or_404(

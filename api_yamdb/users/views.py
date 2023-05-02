@@ -1,15 +1,15 @@
-from django.shortcuts import get_object_or_404
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+from rest_framework import filters, generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import permissions, generics, status, viewsets, filters
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.conf import settings
 
-from .tokens import account_activation_token
-from .serializers import ProfileSerializer, UserSerializer, SignUpSerializer
 from .permissions import StuffOnly
+from .serializers import ProfileSerializer, SignUpSerializer, UserSerializer
+from .tokens import account_activation_token
 
 User = get_user_model()
 
