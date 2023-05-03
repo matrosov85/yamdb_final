@@ -46,6 +46,7 @@ DB_HOST=db
 DB_PORT=5432 
 ```
 
+
 ## Настройка удаленного сервера
 
 * Подключиться к удаленному серверу:
@@ -142,7 +143,8 @@ git push
   sudo docker-compose down
   ```
 
-## Примеры запросов к API
+
+## Примеры запросов к API (подробная документация доступна по адресу: `.../redoc/`)
 
 ### Получение списка всех произведений
 
@@ -164,10 +166,28 @@ git push
 
 ```bash
 {
-  "count": 0,
-  "next": "string",
-  "previous": "string",
-  "results": [...]
+    "count": 0,
+    "next": "string",
+    "previous": "string",
+    "results": [
+        {
+            "id": 0,
+            "name": "string",
+            "year": 0,
+            "rating": 0,
+            "description": "string",
+            "genre": [
+                {
+                    "name": "string",
+                    "slug": "string"
+                }
+            ],
+            "category": {
+                "name": "string",
+                "slug": "string"
+            }
+        }
+    ]
 }
 ```
 
@@ -185,8 +205,8 @@ Body:
 
 ```bash
 {
-  "email" : "string", # Здесь ваши данные. До 254 символов, string
-  "username" : "string" # Здесь ваши данные. До 150 символов, string
+    "email" : "string", # Здесь ваши данные. До 254 символов, string
+    "username" : "string" # Здесь ваши данные. До 150 символов, string
 }
 ```
 
@@ -194,8 +214,8 @@ Body:
 
 ```bash
 {
-  "email": "string",
-  "username": "string"
+    "email": "string",
+    "username": "string"
 }
 ```
 
@@ -221,8 +241,8 @@ Body:
 
 ```bash
 {
-  "text" : "example-text", # Текст отзыва, string
-  "score" : [1...10] # Оценка в диапазоне от 1 до 10, integer
+    "text" : "example-text", # Текст отзыва, string
+    "score" : [1...10] # Оценка в диапазоне от 1 до 10, integer
 }
 ```
 
@@ -230,11 +250,11 @@ Body:
 
 ```bash
 {
-"id": 0,
-"text": "example-text",
-"author": "string",
-"score": 1,
-"pub_date": "2019-08-24T14:15:22Z"
+    "id": 0,
+    "text": "example-text",
+    "author": "string",
+    "score": 1,
+    "pub_date": "2019-08-24T14:15:22Z"
 }
 ```
 
@@ -243,5 +263,3 @@ Body:
 - **400** Отсутствует обязательное поле или оно некорректно
 - **401** Необходим JWT-токен
 - **404** Произведение не найдено
-
-Подробная документация описана в ReDoc
