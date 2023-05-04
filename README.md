@@ -13,9 +13,9 @@
 # YaMDb
 Проект YaMDb собирает отзывы и оценки пользователей о различных произведениях. Произведения делятся на категории и жанры, список которых может быть расширен администратором. Доступ реализован через API-интерфейс.
 
-* http://matrosov85.ddns.net/api/v1
-* http://matrosov85.ddns.net/admin
-* http://matrosov85.ddns.net/redoc
+* http://matrosov85.ddns.net/api/v1/
+* http://matrosov85.ddns.net/admin/
+* http://matrosov85.ddns.net/redoc/
 
 ## Установка и запуск проекта
 
@@ -76,7 +76,7 @@ docker-compose down
 ```
 
 
-## Примеры запросов к API (подробная документация доступна по адресу: `.../redoc/`)
+## Примеры запросов к API
 
 ### Получение списка всех произведений
 
