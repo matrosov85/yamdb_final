@@ -13,17 +13,15 @@
 # YaMDb
 Проект YaMDb собирает отзывы и оценки пользователей о различных произведениях. Произведения делятся на категории и жанры, список которых может быть расширен администратором. Доступ реализован через API-интерфейс.
 
+* http://matrosov85.ddns.net/api/v1
+* http://matrosov85.ddns.net/admin
+* http://matrosov85.ddns.net/redoc
 
-## Установка
+## Установка и запуск проекта
 
-* Клонировать репозиторий:
+* Клонировать репозиторий и перейти в корневую директорию проекта:
 ```bash
-git clone <url>
-```
-
-* Перейти в корневую директорию проекта:
-```bash
-cd yamdb_final
+git clone https://github.com/matrosov85/yamdb_final.git && cd yamdb_final
 ```
 
 * Создать и активировать виртуальное окружение:
@@ -36,7 +34,7 @@ python -m venv venv && . venv/scripts/activate
 python -m pip install --upgrade pip && pip install -r api_yamdb/requirements.txt
 ```
 
-* Cоздать файл `infra/.env`:
+* Cоздать файл `infra/.env` со следующим содержимым:
 ```bash
 DB_ENGINE=django.db.backends.postgresql 
 DB_NAME=postgres 
@@ -46,102 +44,36 @@ DB_HOST=db
 DB_PORT=5432 
 ```
 
-
-## Настройка удаленного сервера
-
-* Подключиться к удаленному серверу:
+* Выполнить команду запуска контейнеров из директории `infra`:
 ```bash
-ssh <username>@<host>
+cd infra && docker-compose up -d --build
 ```
 
-* Обновить менеджер пакетов и системные пакеты:
+* Создать и выполнить миграции:
 ```bash
-sudo apt update && sudo apt upgrade -y
+docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate
 ```
 
-* Установить `docker`:
+* Создать суперпользователя:
 ```bash
-sudo apt install docker.io
+docker-compose exec web python manage.py createsuperuser
 ```
 
-* Установить `docker-compose`:
+* Собрать статику:
 ```bash
-sudo curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+docker-compose exec web python manage.py collectstatic --no-input
 ```
 
-* Создать директорию `nginx`:
+* Создать дамп базы данных:
 ```bash
-mkdir nginx/
+docker-compose exec web python manage.py dumpdata > fixtures.json
 ```
 
-* Скопировать файлы `docker-compose.yaml` и `nginx/defult.conf` из локальной директории `infra` проекта на сервер:
+* Для остановки контейнеров выполнить команду:
 ```bash
-scp docker-compose.yml <username>@<host>:/home/<username>/docker-compose.yaml
-scp default.conf <username>@<host>:/home/<username>/nginx/default.conf
+docker-compose down
 ```
-
-* Добавить переменные в `Github/Settings/Secrets and variables/Actions/Secrets`:
-```bash
-DOCKER_USERNAME       # логин DockerHub
-DOCKER_PASSWORD       # пароль DockerHub
-
-USER                  # логин для подключения к серверу
-HOST                  # IP-адрес сервера
-SSH_KEY               # приватный SSH-ключ компьютера, имеющего доступ к серверу (cat ~/.ssh/id_rsa)
-PASSPHRASE            # пароль от SSH-ключа
-
-TELEGRAM_TO           # ID телеграм-аккаунта (@userinfobot)
-TELEGRAM_TOKEN        # токен телеграм бота (@botfather)
-
-DB_ENGINE             # django.db.backends.postgresql
-DB_NAME               # название БД (postgres)
-DB_HOST               # название контейнера (db)
-DB_PORT               # порт для подключения к БД (5432)
-POSTGRES_USER         # логин для подключения к БД (postgres)
-POSTGRES_PASSWORD     # пароль для подключения к БД (postgres)
-```
-
-## Запуск
-
-* Выполнить push в ветку `main`:
-```bash
-git add .
-git commit -m 'комментарий'
-git push
-```
-
-* После выполнения команды `git push` будет выполнен `workflow`, состоящий из следующих задач:
-  * проверка кода на соответствие стандарту `PEP8` (с помощью пакета `flake8`) и запуск `pytest` из репозитория `yamdb_final`
-  * сборка и доставка докер-образа для контейнера `web` на `Docker Hub`
-  * автоматический деплой проекта на сервер
-  * отправка уведомления в `Telegram` о том, что процесс деплоя успешно завершился
-
-* После деплоя зайти на сервер и выполнить окончательные настройки:
-  * создать миграции:
-  ```bash
-  sudo docker-compose exec web python manage.py makemigrations
-  ```
-  * выполнить миграции:
-  ```bash
-  sudo docker-compose exec web python manage.py migrate
-  ```
-  * создать суперпользователя:
-  ```bash
-  sudo docker-compose exec web python manage.py createsuperuser
-  ```
-  * собрать статику:
-  ```bash
-  sudo docker-compose exec web python manage.py collecstatic --no-input
-  ```
-  * наполнить базу данных:
-  ```bash
-  sudo docker-compose exec web python manage.py loaddata fixtures.json
-  ```
-  * остановить контейнеры:
-  ```bash
-  sudo docker-compose down
-  ```
 
 
 ## Примеры запросов к API (подробная документация доступна по адресу: `.../redoc/`)
